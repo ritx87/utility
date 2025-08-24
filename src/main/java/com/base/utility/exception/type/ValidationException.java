@@ -6,6 +6,9 @@ import lombok.Getter;
 
 @Getter
 public class ValidationException extends BusinessException{
+    public ValidationException(String message) {
+        super(ErrorCode.VALIDATION_FAILED, message);
+    }
     public ValidationException(String message, Object details) {
         super(ErrorCode.VALIDATION_FAILED, message, details);
     }

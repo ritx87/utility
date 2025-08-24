@@ -46,7 +46,8 @@ public enum ErrorCode {
     // External service errors (6000-6999)
     EXTERNAL_SERVICE_UNAVAILABLE("ERR_6000", "External service is unavailable"),
     EXTERNAL_SERVICE_TIMEOUT("ERR_6001", "External service timeout"),
-    INVALID_EXTERNAL_RESPONSE("ERR_6002", "Invalid response from external service");
+    INVALID_EXTERNAL_RESPONSE("ERR_6002", "Invalid response from external service"),
+    TECHNICAL_ERROR("ERR_6002", "Technical error occurred");
 
     private final String code;
     private final String message;

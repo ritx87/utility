@@ -1,0 +1,65 @@
+# Default configuration for Common Utils Library
+common:
+  utils:
+    exception:
+      global-handler:
+        enabled: true
+        include-stack-trace: false
+        sanitize-messages: true
+
+    aspect:
+      logging:
+        enabled: true
+        level: INFO
+        log-execution-time: true
+        log-parameters: false
+        log-return-values: false
+      auditing:
+        enabled: true
+        audit-controllers: true
+        audit-services: true
+        include-request-body: false
+        include-response-body: false
+
+    http-client:
+      enabled: true
+      connection-timeout: 5000
+      read-timeout: 30000
+      max-retries: 3
+      retry-delay-ms: 1000
+      max-connections: 100
+      compression-enabled: true
+      retry:
+        enabled: true
+        max-attempts: 3
+        initial-delay-ms: 1000
+        backoff-multiplier: 2.0
+        max-delay-ms: 30000
+      logging:
+        enabled: true
+        log-headers: false
+        log-request-body: false
+        log-response-body: false
+        max-body-size: 4096
+
+    security:
+      enabled: false
+      issuer-uri: http://localhost:8080/realms/master
+      jwk-set-uri: http://localhost:8080/realms/master/protocol/openid-connect/certs
+
+# Logging configuration
+logging:
+  level:
+    com.company.common.utils: DEBUG
+    API_AUDIT: INFO
+    root: INFO
+
+# Management endpoints
+management:
+  endpoints:
+    web:
+      exposure:
+        include: health,info,metrics
+  endpoint:
+    health:
+      show-details: when_authorized
