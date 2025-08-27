@@ -25,7 +25,8 @@ import java.sql.SQLException;
 import java.util.Map;
 import java.util.stream.Collectors;
 
-import static com.base.utility.utils.AppConstant.MDC_KEY;
+import static com.base.utility.utils.AppConstant.CORRELATION_ID;
+
 
 @Slf4j
 @RestControllerAdvice
@@ -38,7 +39,7 @@ public class GlobalExceptionHandler {
                 ex.getErrorCodeString(),
                 ex.getMessage(),
                 ex.getDetails(),
-                MDC.get(MDC_KEY)
+                MDC.get(CORRELATION_ID)
         );
 
         return ResponseEntity.status(HttpStatus.NOT_FOUND).body(response);
@@ -52,7 +53,7 @@ public class GlobalExceptionHandler {
                 ex.getErrorCodeString(),
                 ex.getMessage(),
                 ex.getDetails(),
-                MDC.get(MDC_KEY)
+                MDC.get(CORRELATION_ID)
         );
 
         return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(response);
@@ -66,7 +67,7 @@ public class GlobalExceptionHandler {
                 ex.getErrorCodeString(),
                 ex.getMessage(),
                 ex.getDetails(),
-                MDC.get(MDC_KEY)
+                MDC.get(CORRELATION_ID)
         );
 
         return ResponseEntity.status(HttpStatus.CONFLICT).body(response);
@@ -80,7 +81,7 @@ public class GlobalExceptionHandler {
                 ex.getErrorCodeString(),
                 ex.getMessage(),
                 ex.getDetails(),
-                MDC.get(MDC_KEY)
+                MDC.get(CORRELATION_ID)
         );
 
         return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(response);
@@ -119,7 +120,7 @@ public class GlobalExceptionHandler {
                 ErrorCode.VALIDATION_FAILED.getCode(),
                 "Request validation failed. Please check the field errors.",
                 errorDetails,
-                MDC.get(MDC_KEY)
+                MDC.get(CORRELATION_ID)
         );
 
         return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(response);
@@ -140,7 +141,7 @@ public class GlobalExceptionHandler {
                 ErrorCode.VALIDATION_FAILED.getCode(),
                 "Validation constraint violation",
                 Map.of("violations", violations),
-                MDC.get(MDC_KEY)
+                MDC.get(CORRELATION_ID)
         );
 
         return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(response);
@@ -154,7 +155,7 @@ public class GlobalExceptionHandler {
                 ErrorCode.INVALID_REQUEST.getCode(),
                 "Malformed JSON request. Please check your request body format.",
                 null,
-                MDC.get(MDC_KEY)
+                MDC.get(CORRELATION_ID)
         );
 
         return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(response);
@@ -177,7 +178,7 @@ public class GlobalExceptionHandler {
                         ex.getRequiredType() != null ? ex.getRequiredType().getSimpleName() : "unknown",
                         ex.getValue()),
                 errorDetails,
-                MDC.get(MDC_KEY)
+                MDC.get(CORRELATION_ID)
         );
 
         return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(response);
@@ -191,7 +192,7 @@ public class GlobalExceptionHandler {
                 ErrorCode.MISSING_REQUIRED_FIELD.getCode(),
                 String.format("Required parameter '%s' is missing", ex.getParameterName()),
                 Map.of("parameter", ex.getParameterName(), "type", ex.getParameterType()),
-                MDC.get(MDC_KEY)
+                MDC.get(CORRELATION_ID)
         );
 
         return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(response);
@@ -205,7 +206,7 @@ public class GlobalExceptionHandler {
                 ErrorCode.METHOD_NOT_ALLOWED.getCode(),
                 String.format("HTTP method '%s' is not supported for this endpoint", ex.getMethod()),
                 Map.of("supportedMethods", ex.getSupportedMethods()),
-                MDC.get(MDC_KEY)
+                MDC.get(CORRELATION_ID)
         );
 
         return ResponseEntity.status(HttpStatus.METHOD_NOT_ALLOWED).body(response);
@@ -233,7 +234,7 @@ public class GlobalExceptionHandler {
                 errorCode.getCode(),
                 message,
                 null,
-                MDC.get(MDC_KEY)
+                MDC.get(CORRELATION_ID)
         );
 
         return ResponseEntity.status(HttpStatus.CONFLICT).body(response);
@@ -247,7 +248,7 @@ public class GlobalExceptionHandler {
                 ErrorCode.DATABASE_CONNECTION_ERROR.getCode(),
                 ErrorCode.DATABASE_CONNECTION_ERROR.getMessage(),
                 null,
-                MDC.get(MDC_KEY)
+                MDC.get(CORRELATION_ID)
         );
 
         return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(response);
@@ -261,7 +262,7 @@ public class GlobalExceptionHandler {
                 ErrorCode.INTERNAL_SERVER_ERROR.getCode(),
                 ErrorCode.INTERNAL_SERVER_ERROR.getMessage(),
                 null,
-                MDC.get(MDC_KEY)
+                MDC.get(CORRELATION_ID)
         );
 
         return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(response);

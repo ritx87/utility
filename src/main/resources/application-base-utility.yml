@@ -1,0 +1,160 @@
+# application-base-utility.yml
+base-utility:
+  enabled: true
+  async:
+    enabled: true
+    core-size: 5
+    max-size: 10
+    queue-capacity: 100
+    thread-name-prefix: "base-async-"
+    keep-alive-seconds: 60
+  logging:
+    enabled: true
+    level: INFO
+    json-format: true
+    correlation-id: true
+    correlation-id-header: X-Correlation-ID
+  
+  audit:
+    enabled: true
+    log-request-body: true
+    log-response-body: true
+    masked-fields:
+      - password
+      - token
+      - authorization
+      - ssn
+      - creditCard
+      - apiKey
+      - secret
+    max-body-length: 1000
+  
+  webclient:
+    connect-timeout: 5s
+    response-timeout: 30s
+    read-timeout: 30s
+    max-retries: 3
+    retry-delay: 1s
+    max-in-memory-size: 1048576
+  
+  security:
+    enabled: true
+    jwt:
+      enabled: true
+
+  database:
+    repository-base-packages: com.company
+    liquibase:
+      enabled: false
+    flyway:
+      enabled: false
+  
+  resilience:
+    enabled: true
+    circuit-breaker:
+      enabled: true
+    retry:
+      enabled: true
+    bulkhead:
+      enabled: true
+  
+  monitoring:
+    enabled: true
+    metrics:
+      enabled: true
+    prometheus:
+      enabled: true
+  
+  testing:
+    enabled: false
+  
+  utils:
+    enabled: true
+  
+  dev-tools:
+    enabled: false
+  
+  production:
+    enabled: false
+
+# Spring Boot Actuator Configuration
+management:
+  endpoints:
+    web:
+      exposure:
+        include: health,info,metrics,prometheus,env,configprops
+      base-path: /actuator
+  endpoint:
+    health:
+      show-details: always
+      show-components: always
+    metrics:
+      enabled: true
+    prometheus:
+      enabled: true
+  metrics:
+    export:
+      prometheus:
+        enabled: true
+        step: 30s
+    distribution:
+      percentiles-histogram:
+        http.server.requests: true
+      percentiles:
+        http.server.requests: 0.50, 0.90, 0.95, 0.99
+      sla:
+        http.server.requests: 50ms, 100ms, 200ms, 500ms
+
+# OpenAPI/Swagger Configuration
+springdoc:
+  api-docs:
+    enabled: true
+    path: /v3/api-docs
+  swagger-ui:
+    enabled: true
+    path: /swagger-ui.html
+    display-request-duration: true
+    groups-order: DESC
+    operations-sorter: method
+    disable-swagger-default-url: true
+    use-root-path: true
+  show-actuator: false
+
+# Resilience4j Configuration
+resilience4j:
+  retry:
+    instances:
+      default:
+        max-attempts: 3
+        wait-duration: 1000ms
+        exponential-backoff-multiplier: 2
+        retry-exceptions:
+          - java.io.IOException
+          - java.util.concurrent.TimeoutException
+  circuitbreaker:
+    instances:
+      default:
+        sliding-window-size: 10
+        minimum-number-of-calls: 5
+        failure-rate-threshold: 50
+        wait-duration-in-open-state: 30s
+        permitted-number-of-calls-in-half-open-state: 3
+        slow-call-rate-threshold: 50
+        slow-call-duration-threshold: 2s
+  bulkhead:
+    instances:
+      default:
+        max-concurrent-calls: 25
+        max-wait-duration: 500ms
+
+# Logging Configuration
+logging:
+  pattern:
+    console: "%d{yyyy-MM-dd HH:mm:ss.SSS} [%thread] %-5level [%X{correlationId:-}] %logger{36} - %msg%n"
+    file: "%d{yyyy-MM-dd HH:mm:ss.SSS} [%thread] %-5level [%X{correlationId:-}] %logger{36} - %msg%n"
+  level:
+    com.company.baseutility: DEBUG
+    org.springframework.web: INFO
+    org.springframework.security: INFO
+    org.hibernate: WARN
+    org.springframework.boot.autoconfigure: INFO
