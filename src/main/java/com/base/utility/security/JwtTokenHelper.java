@@ -101,6 +101,7 @@ public class JwtTokenHelper {
         }
 
         if (isTokenExpired()) {
+            log.error("JWT token has expired");
             throw new BusinessException(ErrorCode.UNAUTHORIZED, "JWT token has expired");
         }
     }

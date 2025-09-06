@@ -1,7 +1,7 @@
 package com.base.utility.exception.utils;
 
 
-import com.base.utility.exception.response.ApiResponse;
+import com.base.utility.exception.response.BaseApiResponse;
 import com.base.utility.exception.type.BusinessException;
 import com.base.utility.exception.type.DuplicateResourceException;
 import com.base.utility.exception.type.ResourceNotFoundException;
@@ -32,10 +32,10 @@ import static com.base.utility.utils.AppConstant.CORRELATION_ID;
 @RestControllerAdvice
 public class GlobalExceptionHandler {
     @ExceptionHandler(ResourceNotFoundException.class)
-    public ResponseEntity<ApiResponse<Void>> handleResourceNotFound(ResourceNotFoundException ex) {
+    public ResponseEntity<BaseApiResponse<Void>> handleResourceNotFound(ResourceNotFoundException ex) {
         log.warn("Resource not found: {} - Code: {}", ex.getMessage(), ex.getErrorCodeString());
 
-        ApiResponse<Void> response = ApiResponse.error(
+        BaseApiResponse<Void> response = BaseApiResponse.error(
                 ex.getErrorCodeString(),
                 ex.getMessage(),
                 ex.getDetails(),
@@ -46,10 +46,10 @@ public class GlobalExceptionHandler {
     }
 
     @ExceptionHandler(ValidationException.class)
-    public ResponseEntity<ApiResponse<Void>> handleValidationException(ValidationException ex) {
+    public ResponseEntity<BaseApiResponse<Void>> handleValidationException(ValidationException ex) {
         log.warn("Validation error: {} - Code: {}", ex.getMessage(), ex.getErrorCodeString());
 
-        ApiResponse<Void> response = ApiResponse.error(
+        BaseApiResponse<Void> response = BaseApiResponse.error(
                 ex.getErrorCodeString(),
                 ex.getMessage(),
                 ex.getDetails(),
@@ -60,10 +60,10 @@ public class GlobalExceptionHandler {
     }
 
     @ExceptionHandler(DuplicateResourceException.class)
-    public ResponseEntity<ApiResponse<Void>> handleDuplicateResourceException(DuplicateResourceException ex) {
+    public ResponseEntity<BaseApiResponse<Void>> handleDuplicateResourceException(DuplicateResourceException ex) {
         log.warn("Duplicate resource: {} - Code: {}", ex.getMessage(), ex.getErrorCodeString());
 
-        ApiResponse<Void> response = ApiResponse.error(
+        BaseApiResponse<Void> response = BaseApiResponse.error(
                 ex.getErrorCodeString(),
                 ex.getMessage(),
                 ex.getDetails(),
@@ -74,10 +74,10 @@ public class GlobalExceptionHandler {
     }
 
     @ExceptionHandler(BusinessException.class)
-    public ResponseEntity<ApiResponse<Void>> handleBusinessException(BusinessException ex) {
+    public ResponseEntity<BaseApiResponse<Void>> handleBusinessException(BusinessException ex) {
         log.warn("Business exception: {} - Code: {}", ex.getMessage(), ex.getErrorCodeString());
 
-        ApiResponse<Void> response = ApiResponse.error(
+        BaseApiResponse<Void> response = BaseApiResponse.error(
                 ex.getErrorCodeString(),
                 ex.getMessage(),
                 ex.getDetails(),
@@ -88,7 +88,7 @@ public class GlobalExceptionHandler {
     }
 
     @ExceptionHandler(MethodArgumentNotValidException.class)
-    public ResponseEntity<ApiResponse<Void>> handleValidationErrors(MethodArgumentNotValidException ex) {
+    public ResponseEntity<BaseApiResponse<Void>> handleValidationErrors(MethodArgumentNotValidException ex) {
         log.warn("Request validation failed: {}", ex.getMessage());
 
         Map<String, String> fieldErrors = ex.getBindingResult()
@@ -116,7 +116,7 @@ public class GlobalExceptionHandler {
                 "objectName", ex.getBindingResult().getObjectName()
         );
 
-        ApiResponse<Void> response = ApiResponse.error(
+        BaseApiResponse<Void> response = BaseApiResponse.error(
                 ErrorCode.VALIDATION_FAILED.getCode(),
                 "Request validation failed. Please check the field errors.",
                 errorDetails,
@@ -127,7 +127,7 @@ public class GlobalExceptionHandler {
     }
 
     @ExceptionHandler(ConstraintViolationException.class)
-    public ResponseEntity<ApiResponse<Void>> handleConstraintViolation(ConstraintViolationException ex) {
+    public ResponseEntity<BaseApiResponse<Void>> handleConstraintViolation(ConstraintViolationException ex) {
         log.warn("Constraint violation: {}", ex.getMessage());
 
         Map<String, String> violations = ex.getConstraintViolations()
@@ -137,7 +137,7 @@ public class GlobalExceptionHandler {
                         violation -> violation.getMessage()
                 ));
 
-        ApiResponse<Void> response = ApiResponse.error(
+        BaseApiResponse<Void> response = BaseApiResponse.error(
                 ErrorCode.VALIDATION_FAILED.getCode(),
                 "Validation constraint violation",
                 Map.of("violations", violations),
@@ -148,10 +148,10 @@ public class GlobalExceptionHandler {
     }
 
     @ExceptionHandler(HttpMessageNotReadableException.class)
-    public ResponseEntity<ApiResponse<Void>> handleHttpMessageNotReadable(HttpMessageNotReadableException ex) {
+    public ResponseEntity<BaseApiResponse<Void>> handleHttpMessageNotReadable(HttpMessageNotReadableException ex) {
         log.warn("Malformed JSON request: {}", ex.getMessage());
 
-        ApiResponse<Void> response = ApiResponse.error(
+        BaseApiResponse<Void> response = BaseApiResponse.error(
                 ErrorCode.INVALID_REQUEST.getCode(),
                 "Malformed JSON request. Please check your request body format.",
                 null,
@@ -162,7 +162,7 @@ public class GlobalExceptionHandler {
     }
 
     @ExceptionHandler(MethodArgumentTypeMismatchException.class)
-    public ResponseEntity<ApiResponse<Void>> handleTypeMismatch(MethodArgumentTypeMismatchException ex) {
+    public ResponseEntity<BaseApiResponse<Void>> handleTypeMismatch(MethodArgumentTypeMismatchException ex) {
         log.warn("Type mismatch for parameter {}: {}", ex.getName(), ex.getMessage());
 
         Map<String, Object> errorDetails = Map.of(
@@ -171,7 +171,7 @@ public class GlobalExceptionHandler {
                 "expectedType", ex.getRequiredType() != null ? ex.getRequiredType().getSimpleName() : "unknown"
         );
 
-        ApiResponse<Void> response = ApiResponse.error(
+        BaseApiResponse<Void> response = BaseApiResponse.error(
                 ErrorCode.INVALID_FIELD_FORMAT.getCode(),
                 String.format("Invalid value for parameter '%s'. Expected %s but got '%s'",
                         ex.getName(),
@@ -185,10 +185,10 @@ public class GlobalExceptionHandler {
     }
 
     @ExceptionHandler(MissingServletRequestParameterException.class)
-    public ResponseEntity<ApiResponse<Void>> handleMissingParameter(MissingServletRequestParameterException ex) {
+    public ResponseEntity<BaseApiResponse<Void>> handleMissingParameter(MissingServletRequestParameterException ex) {
         log.warn("Missing required parameter: {}", ex.getParameterName());
 
-        ApiResponse<Void> response = ApiResponse.error(
+        BaseApiResponse<Void> response = BaseApiResponse.error(
                 ErrorCode.MISSING_REQUIRED_FIELD.getCode(),
                 String.format("Required parameter '%s' is missing", ex.getParameterName()),
                 Map.of("parameter", ex.getParameterName(), "type", ex.getParameterType()),
@@ -199,10 +199,10 @@ public class GlobalExceptionHandler {
     }
 
     @ExceptionHandler(HttpRequestMethodNotSupportedException.class)
-    public ResponseEntity<ApiResponse<Void>> handleMethodNotSupported(HttpRequestMethodNotSupportedException ex) {
+    public ResponseEntity<BaseApiResponse<Void>> handleMethodNotSupported(HttpRequestMethodNotSupportedException ex) {
         log.warn("Method not supported: {} for this endpoint", ex.getMethod());
 
-        ApiResponse<Void> response = ApiResponse.error(
+        BaseApiResponse<Void> response = BaseApiResponse.error(
                 ErrorCode.METHOD_NOT_ALLOWED.getCode(),
                 String.format("HTTP method '%s' is not supported for this endpoint", ex.getMethod()),
                 Map.of("supportedMethods", ex.getSupportedMethods()),
@@ -213,7 +213,7 @@ public class GlobalExceptionHandler {
     }
 
     @ExceptionHandler(DataIntegrityViolationException.class)
-    public ResponseEntity<ApiResponse<Void>> handleDataIntegrityViolation(DataIntegrityViolationException ex) {
+    public ResponseEntity<BaseApiResponse<Void>> handleDataIntegrityViolation(DataIntegrityViolationException ex) {
         log.error("Database constraint violation", ex);
 
         String message = "Data integrity constraint violation";
@@ -230,7 +230,7 @@ public class GlobalExceptionHandler {
             }
         }
 
-        ApiResponse<Void> response = ApiResponse.error(
+        BaseApiResponse<Void> response = BaseApiResponse.error(
                 errorCode.getCode(),
                 message,
                 null,
@@ -241,10 +241,10 @@ public class GlobalExceptionHandler {
     }
 
     @ExceptionHandler(SQLException.class)
-    public ResponseEntity<ApiResponse<Void>> handleSQLException(SQLException ex) {
+    public ResponseEntity<BaseApiResponse<Void>> handleSQLException(SQLException ex) {
         log.error("Database error occurred", ex);
 
-        ApiResponse<Void> response = ApiResponse.error(
+        BaseApiResponse<Void> response = BaseApiResponse.error(
                 ErrorCode.DATABASE_CONNECTION_ERROR.getCode(),
                 ErrorCode.DATABASE_CONNECTION_ERROR.getMessage(),
                 null,
@@ -255,10 +255,10 @@ public class GlobalExceptionHandler {
     }
 
     @ExceptionHandler(Exception.class)
-    public ResponseEntity<ApiResponse<Void>> handleGenericException(Exception ex) {
+    public ResponseEntity<BaseApiResponse<Void>> handleGenericException(Exception ex) {
         log.error("Unexpected error occurred", ex);
 
-        ApiResponse<Void> response = ApiResponse.error(
+        BaseApiResponse<Void> response = BaseApiResponse.error(
                 ErrorCode.INTERNAL_SERVER_ERROR.getCode(),
                 ErrorCode.INTERNAL_SERVER_ERROR.getMessage(),
                 null,

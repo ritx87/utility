@@ -14,14 +14,14 @@ import java.time.Instant;
 @NoArgsConstructor
 @AllArgsConstructor
 @JsonInclude(JsonInclude.Include.NON_NULL)
-public class ApiResponse <T>{
+public class BaseApiResponse<T>{
     private String status;
     private T data;
     private ErrorDetail error;
     private MetaData meta;
 
-    public static <T> ApiResponse<T> success(T data) {
-        return ApiResponse.<T>builder()
+    public static <T> BaseApiResponse<T> success(T data) {
+        return BaseApiResponse.<T>builder()
                 .status("success")
                 .data(data)
                 .meta(MetaData.builder()
@@ -30,8 +30,8 @@ public class ApiResponse <T>{
                 .build();
     }
 
-    public static <T> ApiResponse<T> success(T data, String requestId) {
-        return ApiResponse.<T>builder()
+    public static <T> BaseApiResponse<T> success(T data, String requestId) {
+        return BaseApiResponse.<T>builder()
                 .status("success")
                 .data(data)
                 .meta(MetaData.builder()
@@ -41,8 +41,8 @@ public class ApiResponse <T>{
                 .build();
     }
 
-    public static ApiResponse<Void> error(ErrorCode errorCode) {
-        return ApiResponse.<Void>builder()
+    public static BaseApiResponse<Void> error(ErrorCode errorCode) {
+        return BaseApiResponse.<Void>builder()
                 .status("error")
                 .error(ErrorDetail.builder()
                         .code(errorCode.getCode())
@@ -54,8 +54,8 @@ public class ApiResponse <T>{
                 .build();
     }
 
-    public static ApiResponse<Void> error(ErrorCode errorCode, String customMessage) {
-        return ApiResponse.<Void>builder()
+    public static BaseApiResponse<Void> error(ErrorCode errorCode, String customMessage) {
+        return BaseApiResponse.<Void>builder()
                 .status("error")
                 .error(ErrorDetail.builder()
                         .code(errorCode.getCode())
@@ -67,8 +67,8 @@ public class ApiResponse <T>{
                 .build();
     }
 
-    public static ApiResponse<Void> error(ErrorCode errorCode, Object details, String requestId) {
-        return ApiResponse.<Void>builder()
+    public static BaseApiResponse<Void> error(ErrorCode errorCode, Object details, String requestId) {
+        return BaseApiResponse.<Void>builder()
                 .status("error")
                 .error(ErrorDetail.builder()
                         .code(errorCode.getCode())
@@ -82,8 +82,8 @@ public class ApiResponse <T>{
                 .build();
     }
 
-    public static ApiResponse<Void> error(ErrorCode errorCode, String customMessage, Object details, String requestId) {
-        return ApiResponse.<Void>builder()
+    public static BaseApiResponse<Void> error(ErrorCode errorCode, String customMessage, Object details, String requestId) {
+        return BaseApiResponse.<Void>builder()
                 .status("error")
                 .error(ErrorDetail.builder()
                         .code(errorCode.getCode())
@@ -98,8 +98,8 @@ public class ApiResponse <T>{
     }
 
     // Backward compatibility methods
-    public static ApiResponse<Void> error(String code, String message) {
-        return ApiResponse.<Void>builder()
+    public static BaseApiResponse<Void> error(String code, String message) {
+        return BaseApiResponse.<Void>builder()
                 .status("error")
                 .error(ErrorDetail.builder()
                         .code(code)
@@ -111,8 +111,8 @@ public class ApiResponse <T>{
                 .build();
     }
 
-    public static ApiResponse<Void> error(String code, String message, Object details, String requestId) {
-        return ApiResponse.<Void>builder()
+    public static BaseApiResponse<Void> error(String code, String message, Object details, String requestId) {
+        return BaseApiResponse.<Void>builder()
                 .status("error")
                 .error(ErrorDetail.builder()
                         .code(code)
